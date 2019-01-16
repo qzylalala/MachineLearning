@@ -1,4 +1,5 @@
 from math import log
+import operator
 
 
 '''计算香农熵'''
@@ -17,6 +18,7 @@ def calShannon(dataSet):
     return shannon
 
 
+'''创建数据集'''
 def createDataSet():
     dataSet = [[1, 1, 'yes'], [1, 1, 'yes'], [1, 0, 'no'], [0, 1, 'no'], [0, 1, 'no']]
     labels = ['no surfacing', 'flippers']
@@ -55,7 +57,36 @@ def choose(dataSet):
     return bestFeature
 
 
-if __name__ == '__main__':
-    dataSet, labels = createDataSet()
-    a = choose(dataSet)
-    print(a)
+'''决定子节点分类'''
+def majorityCnt(classList):
+    classCount = {}
+    for vote in classList:
+        if vote not in classCount.keys():
+            classCount[vote] = 0
+        classCount[vote] += 1
+    sortedCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedCount[0][0]
+
+
+'''创建树的函数'''
+def createTrees(dataSet, labels):
+    classList  =[example[-1] for example in dataSet]
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
+    if len(dataSet[0])  == 1:
+        return majorityCnt(classList)
+    bestFeat = choose(dataSet)
+    bestLabel = labels[bestFeat]
+    myTree = {bestLabel:{}}
+    del(labels[bestFeat])
+    featValues = [example[bestFeat] for example in dataSet]
+    uniqueVals = set(featValues)
+    for value in uniqueVals:
+        subLabels = labels[:]
+        myTree[bestLabel][value] = createTrees(splitDataSet(dataSet, bestFeat, value), subLabels)
+    return myTree
+
+
+myData, labels = createDataSet()
+myTree = createTrees(myData, labels)
+print(myTree)
