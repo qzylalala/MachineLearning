@@ -57,9 +57,12 @@ def classify0(inX,dataSet,labels,k):
         votelLabel = labels[sortedDistIndicies[i]]
         classCount[votelLabel] = classCount.get(votelLabel, 0)+1
     # 对统计的标签数量进行降序排序
-    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
-    #print(sortedClassCount)
-    return sortedClassCount[0][0]
+    maxCount = 0
+    for key, value in classCount.items():
+        if value > maxCount:
+            maxCount = value
+            maxIndex = key
+    return maxIndex
 
 
 '''测试函数'''

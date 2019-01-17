@@ -51,8 +51,8 @@ def Test():
     num = 892
     for i in data:
         theta = getTheta()
-        prob = np.dot(i, theta.transpose())
-        if abs(prob) > 0.5:
+        prob = np.dot(theta.transpose(), i)
+        if prob > 0:
             result.append(1)
         else:
             result.append(0)
